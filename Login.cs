@@ -26,7 +26,7 @@ namespace QuanLyQuanCafe
             if (Login_check(userName, passWord))
             {
                 // Đăng nhập thành công
-                Form1 f = new Form1(); // Form1 là cái form quản lý bàn cafe chính
+                Home f = new Home(); // Form1 là cái form quản lý bàn cafe chính
                 this.Hide();
                 f.ShowDialog();
                 this.Show();
