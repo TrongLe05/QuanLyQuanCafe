@@ -21,6 +21,7 @@ namespace QuanLyQuanCafe
             {
                 LoadTable();
                 LoadCategory();
+                LoadComboBoxSwitchTable(); 
 
                 // Cấu hình ListView (nếu chưa chỉnh trong Design)
                 lsv_Bill.View = View.Details;
@@ -77,6 +78,9 @@ namespace QuanLyQuanCafe
             // Lưu ID bàn vào Tag của ListView để dùng cho nút Thêm/Xóa
             lsv_Bill.Tag = currentTable;
 
+            // Reset giảm giá về 0 mỗi khi chọn bàn mới
+            nud_Discount.Value = 0;
+
             // Hiển thị hóa đơn của bàn này
             ShowBill(currentTable.TableID);
         }
@@ -87,16 +91,16 @@ namespace QuanLyQuanCafe
         void ShowBill(int idTable)
         {
             lsv_Bill.Items.Clear();
-            double totalPrice = 0; // Dùng double hoặc decimal cho tiền tệ
+            double totalPrice = 0; // Tổng tiền chưa giảm
 
             using (QLQCafeEntities db = new QLQCafeEntities())
             {
-                // 1. Lấy Bill chưa thanh toán
+                // 1. Lấy Bill chưa thanh toán của bàn này
                 Bill bill = db.Bill.FirstOrDefault(b => b.idTable == idTable && b.status == 0);
 
                 if (bill != null)
                 {
-                    // 2. Lấy chi tiết hóa đơn
+                    // 2. Lấy danh sách món ăn
                     List<BillInfo> listBillInfo = bill.BillInfo.ToList();
 
                     foreach (BillInfo info in listBillInfo)
@@ -104,12 +108,13 @@ namespace QuanLyQuanCafe
                         Food food = db.Food.FirstOrDefault(f => f.id == info.idFood);
                         if (food == null) continue;
 
+                        // Hiển thị lên ListView
                         ListViewItem lsvItem = new ListViewItem(food.name.ToString());
                         lsvItem.SubItems.Add(info.count.ToString());
                         lsvItem.SubItems.Add(food.price.ToString());
                         lsvItem.SubItems.Add((info.count * food.price).ToString());
 
-                        // Tính tổng tiền
+                        // Cộng dồn vào tổng tiền gốc
                         totalPrice += (double)(info.count * food.price);
 
                         lsv_Bill.Items.Add(lsvItem);
@@ -117,14 +122,31 @@ namespace QuanLyQuanCafe
                 }
             }
 
-            // 3. Hiển thị tổng tiền ra TextBox
-            // "c" là format currency (tiền tệ) -> tự động thêm đ hoặc $ tùy máy
-            CultureInfo culture = new CultureInfo("vi-VN");
+            // --- PHẦN TÍNH TOÁN GIẢM GIÁ (MỚI) ---
 
-            // Giả sử tên TextBox hiển thị tiền là txt_ThanhTien
-            // Nếu tên khác, bạn đổi lại cho đúng (ví dụ: txtTotalPrice)
-            txt_Tong.Text = totalPrice.ToString("c0", culture);
+            // 3. Lấy % Giảm giá từ NumericUpDown (Ví dụ: 10 = 10%)
+            // LƯU Ý: Thay 'nud_Discount' bằng tên thực tế của nút giảm giá bên Design của bạn
+            int discount = (int)nud_Discount.Value;
+
+            // 4. Tính tiền thực tế phải trả
+            // Công thức: Tiền gốc - (Tiền gốc / 100 * %Giảm)
+            double finalTotalPrice = totalPrice - (totalPrice / 100) * discount;
+
+            // 5. Hiển thị ra màn hình (Format tiền Việt, không số thập phân)
+            CultureInfo culture = new CultureInfo("vi-VN");
+            txt_Tong.Text = finalTotalPrice.ToString("c0", culture);
         }
+
+        private void nud_Discount_ValueChanged(object sender, EventArgs e)
+        {
+            // Khi thay đổi số giảm giá -> Load lại Bill để tính lại tiền
+            if (currentTable != null)
+            {
+                ShowBill(currentTable.TableID);
+            }
+        }
+
+
         #endregion
 
         #region 3. Load Danh mục và Món ăn (ComboBox)
@@ -253,44 +275,70 @@ namespace QuanLyQuanCafe
         // Lưu ý: Logic này sẽ xóa món đang được chọn (bôi đen) trong ListView
         private void btn_Xoa_Click(object sender, EventArgs e)
         {
+            // 1. Kiểm tra đầu vào
             if (lsv_Bill.SelectedItems.Count == 0 || currentTable == null)
             {
                 MessageBox.Show("Vui lòng chọn món ăn trong danh sách để xóa!");
                 return;
             }
 
+            // Lấy thông tin từ giao diện
             string foodName = lsv_Bill.SelectedItems[0].Text;
+            int countToDelete = (int)nud_FoodDel.Value; // Lấy số lượng muốn xóa
 
-            if (MessageBox.Show("Bạn có chắc muốn xóa món " + foodName + "?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            // Tạo thông báo xác nhận cho rõ ràng
+            string msg = "";
+            if (countToDelete == 0)
+                msg = "Bạn có chắc muốn xóa TẤT CẢ món " + foodName + "?";
+            else
+                msg = "Bạn có chắc muốn bớt " + countToDelete + " ly/đĩa " + foodName + "?";
+
+            if (MessageBox.Show(msg, "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 using (QLQCafeEntities db = new QLQCafeEntities())
                 {
+                    // Tìm món ăn và Bill
                     Food food = db.Food.FirstOrDefault(f => f.name == foodName);
                     Bill bill = db.Bill.FirstOrDefault(b => b.idTable == currentTable.TableID && b.status == 0);
 
                     if (bill != null && food != null)
                     {
+                        // Tìm dòng thông tin món ăn trong Bill (BillInfo)
                         BillInfo info = db.BillInfo.FirstOrDefault(bi => bi.idBill == bill.BillID && bi.idFood == food.id);
 
                         if (info != null)
                         {
-                            // 1. Xóa món ăn khỏi BillInfo
-                            db.BillInfo.Remove(info);
-                            db.SaveChanges(); // Lưu thay đổi ngay lập tức
+                            // --- LOGIC XÓA THEO YÊU CẦU ---
 
-                            // 2. KIỂM TRA QUAN TRỌNG:
-                            // Xem thử trong Bill này còn món nào không?
-                            bool conMonAnNaoKhong = db.BillInfo.Any(bi => bi.idBill == bill.BillID);
-
-                            if (!conMonAnNaoKhong)
+                            // Trường hợp 1: Người dùng để số 0 HOẶC Số muốn xóa >= Số đang có
+                            // => Xóa luôn dòng này khỏi database
+                            if (countToDelete == 0 || countToDelete >= info.count)
                             {
-                                // Nếu KHÔNG còn món nào (Bill trống rỗng)
+                                db.BillInfo.Remove(info);
+                            }
+                            else
+                            {
+                                // Trường hợp 2: Số muốn xóa nhỏ hơn số đang có
+                                // => Chỉ trừ bớt số lượng
+                                info.count -= countToDelete;
+                            }
+
+                            // Lưu thay đổi món ăn
+                            db.SaveChanges();
+
+                            // --- KIỂM TRA TRẠNG THÁI BÀN ---
+                            // Kiểm tra xem Bill này còn món nào không?
+                            bool billConMonAn = db.BillInfo.Any(bi => bi.idBill == bill.BillID);
+
+                            if (!billConMonAn)
+                            {
+                                // Nếu Bill trống rỗng (không còn món nào)
 
                                 // A. Cập nhật trạng thái bàn về "Trống"
                                 TableFood table = db.TableFood.Find(currentTable.TableID);
                                 table.status = "Trống";
 
-                                // B. (Tùy chọn) Xóa luôn cái Bill rỗng đó đi cho đỡ rác database
+                                // B. Xóa luôn cái Bill rỗng đi cho sạch Data
                                 db.Bill.Remove(bill);
 
                                 db.SaveChanges();
@@ -299,13 +347,99 @@ namespace QuanLyQuanCafe
                     }
                 }
 
-                // Load lại Bill và danh sách bàn (để cập nhật màu sắc bàn)
+                // Cập nhật lại giao diện
                 ShowBill(currentTable.TableID);
                 LoadTable();
+
+                // Reset lại ô số lượng về 1 để lần sau thao tác cho tiện (tuỳ chọn)
+                nud_FoodCount.Value = 1;
             }
         }
         #endregion
 
-        
+        #region 6. Chức năng Chuyển bàn (Nút Chuyển)
+        void LoadComboBoxSwitchTable()
+        {
+            using (QLQCafeEntities db = new QLQCafeEntities())
+            {
+                // Chỉ lấy những bàn có trạng thái là "Trống"
+                List<TableFood> listTable = db.TableFood.Where(t => t.status == "Trống").ToList();
+
+                cbx_ChuyenBan.DataSource = listTable;
+                cbx_ChuyenBan.DisplayMember = "name"; // Hiển thị tên bàn
+            }
+        }
+        #endregion
+
+        private void btn_ChuyenBan_Click(object sender, EventArgs e)
+        {
+            {
+                // 1. Kiểm tra đầu vào
+                if (currentTable == null)
+                {
+                    MessageBox.Show("Vui lòng chọn bàn cần chuyển đi!", "Thông báo");
+                    return;
+                }
+
+                TableFood tableOld = currentTable;
+                TableFood tableNew = cbx_ChuyenBan.SelectedItem as TableFood;
+
+                if (tableNew == null)
+                {
+                    MessageBox.Show("Vui lòng chọn bàn mới để chuyển đến!", "Thông báo");
+                    return;
+                }
+
+                // Kiểm tra xem bàn cũ có Bill nào không (Bàn trống thì không có gì để chuyển)
+                using (QLQCafeEntities db = new QLQCafeEntities())
+                {
+                    Bill bill = db.Bill.FirstOrDefault(b => b.idTable == tableOld.TableID && b.status == 0);
+
+                    if (bill == null)
+                    {
+                        MessageBox.Show("Bàn hiện tại đang trống, không có hóa đơn để chuyển!", "Cảnh báo");
+                        return;
+                    }
+
+                    if (MessageBox.Show(string.Format("Bạn có thật sự muốn chuyển {0} sang {1}?", tableOld.name, tableNew.name),
+                        "Xác nhận chuyển bàn", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    {
+                        // 2. THỰC HIỆN CHUYỂN BÀN
+
+                        // A. Cập nhật Bill: Đổi idTable của Bill từ bàn cũ sang bàn mới
+                        // Lưu ý: Phải tìm lại Bill trong context hiện tại để update
+                        Bill billToUpdate = db.Bill.Find(bill.BillID);
+                        billToUpdate.idTable = tableNew.TableID;
+
+                        // B. Cập nhật trạng thái Bàn Cũ -> "Trống"
+                        TableFood dbTableOld = db.TableFood.Find(tableOld.TableID);
+                        dbTableOld.status = "Trống";
+
+                        // C. Cập nhật trạng thái Bàn Mới -> "Có người"
+                        TableFood dbTableNew = db.TableFood.Find(tableNew.TableID);
+                        dbTableNew.status = "Có người";
+
+                        // Lưu tất cả thay đổi
+                        db.SaveChanges();
+
+                        MessageBox.Show("Chuyển bàn thành công!", "Thông báo");
+
+                        // 3. CẬP NHẬT GIAO DIỆN
+                        LoadTable();             // Vẽ lại màu sắc các bàn
+                        LoadComboBoxSwitchTable(); // Load lại danh sách bàn trống (vì bàn mới giờ đã hết trống)
+
+                        // Mặc định sau khi chuyển xong thì coi như đang chọn bàn mới luôn
+                        ShowBill(tableNew.TableID);
+
+                        // Cập nhật lại biến currentTable để trỏ vào bàn mới (để nếu ấn Thêm món thì thêm đúng bàn)
+                        // (Phải lấy lại object bàn mới từ DB hoặc gán tạm)
+                        // Cách đơn giản nhất: Gán Tag từ nút bàn mới (nhưng vì ta vừa reload table, nên ta gán thủ công)
+                        tableNew.status = "Có người"; // Cập nhật local
+                        currentTable = tableNew;
+                        lsv_Bill.Tag = currentTable;
+                    }
+                }
+            }
+        }
     }
 }

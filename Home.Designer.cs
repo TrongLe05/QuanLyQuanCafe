@@ -35,15 +35,17 @@
             this.btn_Them = new System.Windows.Forms.Button();
             this.nud_FoodCount = new System.Windows.Forms.NumericUpDown();
             this.txt_Tong = new System.Windows.Forms.TextBox();
-            this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
+            this.nud_Discount = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
-            this.comboBox3 = new System.Windows.Forms.ComboBox();
+            this.cbx_ChuyenBan = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.btn_Xoa = new System.Windows.Forms.Button();
             this.btn_ChuyenBan = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
+            this.nud_FoodDel = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.nud_FoodCount)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nud_Discount)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nud_FoodDel)).BeginInit();
             this.SuspendLayout();
             // 
             // flp_Ban
@@ -92,10 +94,15 @@
             // 
             // nud_FoodCount
             // 
-            this.nud_FoodCount.Location = new System.Drawing.Point(1066, 72);
+            this.nud_FoodCount.Location = new System.Drawing.Point(1060, 88);
             this.nud_FoodCount.Name = "nud_FoodCount";
             this.nud_FoodCount.Size = new System.Drawing.Size(50, 22);
             this.nud_FoodCount.TabIndex = 5;
+            this.nud_FoodCount.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             // 
             // txt_Tong
             // 
@@ -105,12 +112,13 @@
             this.txt_Tong.Size = new System.Drawing.Size(90, 22);
             this.txt_Tong.TabIndex = 7;
             // 
-            // numericUpDown2
+            // nud_Discount
             // 
-            this.numericUpDown2.Location = new System.Drawing.Point(920, 346);
-            this.numericUpDown2.Name = "numericUpDown2";
-            this.numericUpDown2.Size = new System.Drawing.Size(90, 22);
-            this.numericUpDown2.TabIndex = 8;
+            this.nud_Discount.Location = new System.Drawing.Point(920, 346);
+            this.nud_Discount.Name = "nud_Discount";
+            this.nud_Discount.Size = new System.Drawing.Size(90, 22);
+            this.nud_Discount.TabIndex = 8;
+            this.nud_Discount.ValueChanged += new System.EventHandler(this.nud_Discount_ValueChanged);
             // 
             // label1
             // 
@@ -121,13 +129,13 @@
             this.label1.TabIndex = 9;
             this.label1.Text = "Giảm giá";
             // 
-            // comboBox3
+            // cbx_ChuyenBan
             // 
-            this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Location = new System.Drawing.Point(920, 247);
-            this.comboBox3.Name = "comboBox3";
-            this.comboBox3.Size = new System.Drawing.Size(90, 24);
-            this.comboBox3.TabIndex = 10;
+            this.cbx_ChuyenBan.FormattingEnabled = true;
+            this.cbx_ChuyenBan.Location = new System.Drawing.Point(920, 247);
+            this.cbx_ChuyenBan.Name = "cbx_ChuyenBan";
+            this.cbx_ChuyenBan.Size = new System.Drawing.Size(90, 24);
+            this.cbx_ChuyenBan.TabIndex = 10;
             // 
             // label2
             // 
@@ -157,6 +165,7 @@
             this.btn_ChuyenBan.TabIndex = 13;
             this.btn_ChuyenBan.Text = "Chuyển";
             this.btn_ChuyenBan.UseVisualStyleBackColor = true;
+            this.btn_ChuyenBan.Click += new System.EventHandler(this.btn_ChuyenBan_Click);
             // 
             // button1
             // 
@@ -168,18 +177,26 @@
             this.button1.Text = "Thanh Toán";
             this.button1.UseVisualStyleBackColor = false;
             // 
+            // nud_FoodDel
+            // 
+            this.nud_FoodDel.Location = new System.Drawing.Point(955, 87);
+            this.nud_FoodDel.Name = "nud_FoodDel";
+            this.nud_FoodDel.Size = new System.Drawing.Size(50, 22);
+            this.nud_FoodDel.TabIndex = 15;
+            // 
             // Home
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1130, 657);
+            this.Controls.Add(this.nud_FoodDel);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.btn_ChuyenBan);
             this.Controls.Add(this.btn_Xoa);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.comboBox3);
+            this.Controls.Add(this.cbx_ChuyenBan);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.numericUpDown2);
+            this.Controls.Add(this.nud_Discount);
             this.Controls.Add(this.txt_Tong);
             this.Controls.Add(this.nud_FoodCount);
             this.Controls.Add(this.btn_Them);
@@ -191,7 +208,8 @@
             this.Text = "Home";
             this.Load += new System.EventHandler(this.Home_Load_1);
             ((System.ComponentModel.ISupportInitialize)(this.nud_FoodCount)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nud_Discount)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nud_FoodDel)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -206,12 +224,13 @@
         private System.Windows.Forms.Button btn_Them;
         private System.Windows.Forms.NumericUpDown nud_FoodCount;
         private System.Windows.Forms.TextBox txt_Tong;
-        private System.Windows.Forms.NumericUpDown numericUpDown2;
+        private System.Windows.Forms.NumericUpDown nud_Discount;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ComboBox comboBox3;
+        private System.Windows.Forms.ComboBox cbx_ChuyenBan;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button btn_Xoa;
         private System.Windows.Forms.Button btn_ChuyenBan;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.NumericUpDown nud_FoodDel;
     }
 }
