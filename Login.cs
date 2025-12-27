@@ -46,7 +46,7 @@ namespace QuanLyQuanCafe
             using (QLQCafeEntities db = new QLQCafeEntities())
             {
                 // So sánh UserName VÀ Mật khẩu đã mã hóa (hashPass)
-                var result = db.Account
+                var result = db.Accounts
                                .Where(p => p.UserName == userName && p.Password == hashPass)
                                .FirstOrDefault();
 

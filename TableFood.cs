@@ -17,7 +17,7 @@ namespace QuanLyQuanCafe
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public TableFood()
         {
-            this.Bill = new HashSet<Bill>();
+            this.Bills = new HashSet<Bill>();
         }
     
         public int TableID { get; set; }
@@ -25,6 +25,6 @@ namespace QuanLyQuanCafe
         public string status { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Bill> Bill { get; set; }
+        public virtual ICollection<Bill> Bills { get; set; }
     }
 }

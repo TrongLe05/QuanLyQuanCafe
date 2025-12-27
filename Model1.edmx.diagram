@@ -4,18 +4,18 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="ec6a1dc0498a4584b60dbb4437e806bf" Name="Diagram1">
+      <Diagram DiagramId="0d1adf4ea32946528ddd586346d44c35" Name="Diagram1">
         <EntityTypeShape EntityType="QLQCafeModel.Account" Width="1.5" PointX="5.75" PointY="4.75" IsExpanded="true" />
         <EntityTypeShape EntityType="QLQCafeModel.Bill" Width="1.5" PointX="3" PointY="4.875" IsExpanded="true" />
         <EntityTypeShape EntityType="QLQCafeModel.BillInfo" Width="1.5" PointX="5.25" PointY="0.875" IsExpanded="true" />
         <EntityTypeShape EntityType="QLQCafeModel.Food" Width="1.5" PointX="3" PointY="0.875" IsExpanded="true" />
         <EntityTypeShape EntityType="QLQCafeModel.FoodCategory" Width="1.5" PointX="0.75" PointY="1.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="QLQCafeModel.sysdiagrams" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="QLQCafeModel.sysdiagram" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="QLQCafeModel.TableFood" Width="1.5" PointX="0.75" PointY="5.125" IsExpanded="true" />
-        <AssociationConnector Association="QLQCafeModel.FK__Bill__idTable__49C3F6B7" ManuallyRouted="false" />
-        <AssociationConnector Association="QLQCafeModel.FK__BillInfo__idBill__4D94879B" ManuallyRouted="false" />
-        <AssociationConnector Association="QLQCafeModel.FK__BillInfo__idFood__4E88ABD4" ManuallyRouted="false" />
-        <AssociationConnector Association="QLQCafeModel.FK__Food__idCategory__44FF419A" ManuallyRouted="false" />
+        <AssociationConnector Association="QLQCafeModel.FK__Bill__TableID__17F790F9" ManuallyRouted="false" />
+        <AssociationConnector Association="QLQCafeModel.FK__BillInfo__BillID__1BC821DD" ManuallyRouted="false" />
+        <AssociationConnector Association="QLQCafeModel.FK__BillInfo__FoodID__1CBC4616" ManuallyRouted="false" />
+        <AssociationConnector Association="QLQCafeModel.FK__Food__FoodCaID__04E4BC85" ManuallyRouted="false" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

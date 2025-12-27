@@ -21,7 +21,7 @@
           <Property Name="BillID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="DateCheckIn" Type="date" Nullable="false" />
           <Property Name="DateCheckOut" Type="date" />
-          <Property Name="idTable" Type="int" Nullable="false" />
+          <Property Name="TableID" Type="int" Nullable="false" />
           <Property Name="status" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="BillInfo">
@@ -29,17 +29,17 @@
             <PropertyRef Name="BillInfoID" />
           </Key>
           <Property Name="BillInfoID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="idBill" Type="int" Nullable="false" />
-          <Property Name="idFood" Type="int" Nullable="false" />
+          <Property Name="BillID" Type="int" Nullable="false" />
+          <Property Name="FoodID" Type="int" Nullable="false" />
           <Property Name="count" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Food">
           <Key>
-            <PropertyRef Name="id" />
+            <PropertyRef Name="FoodID" />
           </Key>
-          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FoodID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="idCategory" Type="int" Nullable="false" />
+          <Property Name="FoodCaID" Type="int" Nullable="false" />
           <Property Name="price" Type="float" Nullable="false" />
         </EntityType>
         <EntityType Name="FoodCategory">
@@ -67,7 +67,7 @@
           <Property Name="name" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="status" Type="nvarchar" MaxLength="100" Nullable="false" />
         </EntityType>
-        <Association Name="FK__Bill__idTable__49C3F6B7">
+        <Association Name="FK__Bill__TableID__17F790F9">
           <End Role="TableFood" Type="Self.TableFood" Multiplicity="1" />
           <End Role="Bill" Type="Self.Bill" Multiplicity="*" />
           <ReferentialConstraint>
@@ -75,11 +75,11 @@
               <PropertyRef Name="TableID" />
             </Principal>
             <Dependent Role="Bill">
-              <PropertyRef Name="idTable" />
+              <PropertyRef Name="TableID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__BillInfo__idBill__4D94879B">
+        <Association Name="FK__BillInfo__BillID__1BC821DD">
           <End Role="Bill" Type="Self.Bill" Multiplicity="1" />
           <End Role="BillInfo" Type="Self.BillInfo" Multiplicity="*" />
           <ReferentialConstraint>
@@ -87,23 +87,23 @@
               <PropertyRef Name="BillID" />
             </Principal>
             <Dependent Role="BillInfo">
-              <PropertyRef Name="idBill" />
+              <PropertyRef Name="BillID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__BillInfo__idFood__4E88ABD4">
+        <Association Name="FK__BillInfo__FoodID__1CBC4616">
           <End Role="Food" Type="Self.Food" Multiplicity="1" />
           <End Role="BillInfo" Type="Self.BillInfo" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Food">
-              <PropertyRef Name="id" />
+              <PropertyRef Name="FoodID" />
             </Principal>
             <Dependent Role="BillInfo">
-              <PropertyRef Name="idFood" />
+              <PropertyRef Name="FoodID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Food__idCategory__44FF419A">
+        <Association Name="FK__Food__FoodCaID__04E4BC85">
           <End Role="FoodCategory" Type="Self.FoodCategory" Multiplicity="1" />
           <End Role="Food" Type="Self.Food" Multiplicity="*" />
           <ReferentialConstraint>
@@ -111,7 +111,7 @@
               <PropertyRef Name="FoodCaID" />
             </Principal>
             <Dependent Role="Food">
-              <PropertyRef Name="idCategory" />
+              <PropertyRef Name="FoodCaID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -123,19 +123,19 @@
           <EntitySet Name="FoodCategory" EntityType="Self.FoodCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TableFood" EntityType="Self.TableFood" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__Bill__idTable__49C3F6B7" Association="Self.FK__Bill__idTable__49C3F6B7">
+          <AssociationSet Name="FK__Bill__TableID__17F790F9" Association="Self.FK__Bill__TableID__17F790F9">
             <End Role="TableFood" EntitySet="TableFood" />
             <End Role="Bill" EntitySet="Bill" />
           </AssociationSet>
-          <AssociationSet Name="FK__BillInfo__idBill__4D94879B" Association="Self.FK__BillInfo__idBill__4D94879B">
+          <AssociationSet Name="FK__BillInfo__BillID__1BC821DD" Association="Self.FK__BillInfo__BillID__1BC821DD">
             <End Role="Bill" EntitySet="Bill" />
             <End Role="BillInfo" EntitySet="BillInfo" />
           </AssociationSet>
-          <AssociationSet Name="FK__BillInfo__idFood__4E88ABD4" Association="Self.FK__BillInfo__idFood__4E88ABD4">
+          <AssociationSet Name="FK__BillInfo__FoodID__1CBC4616" Association="Self.FK__BillInfo__FoodID__1CBC4616">
             <End Role="Food" EntitySet="Food" />
             <End Role="BillInfo" EntitySet="BillInfo" />
           </AssociationSet>
-          <AssociationSet Name="FK__Food__idCategory__44FF419A" Association="Self.FK__Food__idCategory__44FF419A">
+          <AssociationSet Name="FK__Food__FoodCaID__04E4BC85" Association="Self.FK__Food__FoodCaID__04E4BC85">
             <End Role="FoodCategory" EntitySet="FoodCategory" />
             <End Role="Food" EntitySet="Food" />
           </AssociationSet>
@@ -161,32 +161,32 @@
           <Property Name="BillID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="DateCheckIn" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="DateCheckOut" Type="DateTime" Precision="0" />
-          <Property Name="idTable" Type="Int32" Nullable="false" />
+          <Property Name="TableID" Type="Int32" Nullable="false" />
           <Property Name="status" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="TableFood" Relationship="Self.FK__Bill__idTable__49C3F6B7" FromRole="Bill" ToRole="TableFood" />
-          <NavigationProperty Name="BillInfo" Relationship="Self.FK__BillInfo__idBill__4D94879B" FromRole="Bill" ToRole="BillInfo" />
+          <NavigationProperty Name="TableFood" Relationship="Self.FK__Bill__TableID__17F790F9" FromRole="Bill" ToRole="TableFood" />
+          <NavigationProperty Name="BillInfoes" Relationship="Self.FK__BillInfo__BillID__1BC821DD" FromRole="Bill" ToRole="BillInfo" />
         </EntityType>
         <EntityType Name="BillInfo">
           <Key>
             <PropertyRef Name="BillInfoID" />
           </Key>
           <Property Name="BillInfoID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="idBill" Type="Int32" Nullable="false" />
-          <Property Name="idFood" Type="Int32" Nullable="false" />
+          <Property Name="BillID" Type="Int32" Nullable="false" />
+          <Property Name="FoodID" Type="Int32" Nullable="false" />
           <Property Name="count" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Bill" Relationship="Self.FK__BillInfo__idBill__4D94879B" FromRole="BillInfo" ToRole="Bill" />
-          <NavigationProperty Name="Food" Relationship="Self.FK__BillInfo__idFood__4E88ABD4" FromRole="BillInfo" ToRole="Food" />
+          <NavigationProperty Name="Bill" Relationship="Self.FK__BillInfo__BillID__1BC821DD" FromRole="BillInfo" ToRole="Bill" />
+          <NavigationProperty Name="Food" Relationship="Self.FK__BillInfo__FoodID__1CBC4616" FromRole="BillInfo" ToRole="Food" />
         </EntityType>
         <EntityType Name="Food">
           <Key>
-            <PropertyRef Name="id" />
+            <PropertyRef Name="FoodID" />
           </Key>
-          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FoodID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="idCategory" Type="Int32" Nullable="false" />
+          <Property Name="FoodCaID" Type="Int32" Nullable="false" />
           <Property Name="price" Type="Double" Nullable="false" />
-          <NavigationProperty Name="BillInfo" Relationship="Self.FK__BillInfo__idFood__4E88ABD4" FromRole="Food" ToRole="BillInfo" />
-          <NavigationProperty Name="FoodCategory" Relationship="Self.FK__Food__idCategory__44FF419A" FromRole="Food" ToRole="FoodCategory" />
+          <NavigationProperty Name="BillInfoes" Relationship="Self.FK__BillInfo__FoodID__1CBC4616" FromRole="Food" ToRole="BillInfo" />
+          <NavigationProperty Name="FoodCategory" Relationship="Self.FK__Food__FoodCaID__04E4BC85" FromRole="Food" ToRole="FoodCategory" />
         </EntityType>
         <EntityType Name="FoodCategory">
           <Key>
@@ -194,9 +194,9 @@
           </Key>
           <Property Name="FoodCaID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="Food" Relationship="Self.FK__Food__idCategory__44FF419A" FromRole="FoodCategory" ToRole="Food" />
+          <NavigationProperty Name="Foods" Relationship="Self.FK__Food__FoodCaID__04E4BC85" FromRole="FoodCategory" ToRole="Food" />
         </EntityType>
-        <EntityType Name="sysdiagrams">
+        <EntityType Name="sysdiagram">
           <Key>
             <PropertyRef Name="diagram_id" />
           </Key>
@@ -213,9 +213,9 @@
           <Property Name="TableID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="status" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="Bill" Relationship="Self.FK__Bill__idTable__49C3F6B7" FromRole="TableFood" ToRole="Bill" />
+          <NavigationProperty Name="Bills" Relationship="Self.FK__Bill__TableID__17F790F9" FromRole="TableFood" ToRole="Bill" />
         </EntityType>
-        <Association Name="FK__Bill__idTable__49C3F6B7">
+        <Association Name="FK__Bill__TableID__17F790F9">
           <End Role="TableFood" Type="Self.TableFood" Multiplicity="1" />
           <End Role="Bill" Type="Self.Bill" Multiplicity="*" />
           <ReferentialConstraint>
@@ -223,11 +223,11 @@
               <PropertyRef Name="TableID" />
             </Principal>
             <Dependent Role="Bill">
-              <PropertyRef Name="idTable" />
+              <PropertyRef Name="TableID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__BillInfo__idBill__4D94879B">
+        <Association Name="FK__BillInfo__BillID__1BC821DD">
           <End Role="Bill" Type="Self.Bill" Multiplicity="1" />
           <End Role="BillInfo" Type="Self.BillInfo" Multiplicity="*" />
           <ReferentialConstraint>
@@ -235,23 +235,23 @@
               <PropertyRef Name="BillID" />
             </Principal>
             <Dependent Role="BillInfo">
-              <PropertyRef Name="idBill" />
+              <PropertyRef Name="BillID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__BillInfo__idFood__4E88ABD4">
+        <Association Name="FK__BillInfo__FoodID__1CBC4616">
           <End Role="Food" Type="Self.Food" Multiplicity="1" />
           <End Role="BillInfo" Type="Self.BillInfo" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Food">
-              <PropertyRef Name="id" />
+              <PropertyRef Name="FoodID" />
             </Principal>
             <Dependent Role="BillInfo">
-              <PropertyRef Name="idFood" />
+              <PropertyRef Name="FoodID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Food__idCategory__44FF419A">
+        <Association Name="FK__Food__FoodCaID__04E4BC85">
           <End Role="FoodCategory" Type="Self.FoodCategory" Multiplicity="1" />
           <End Role="Food" Type="Self.Food" Multiplicity="*" />
           <ReferentialConstraint>
@@ -259,33 +259,33 @@
               <PropertyRef Name="FoodCaID" />
             </Principal>
             <Dependent Role="Food">
-              <PropertyRef Name="idCategory" />
+              <PropertyRef Name="FoodCaID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="QLQCafeEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Account" EntityType="Self.Account" />
-          <EntitySet Name="Bill" EntityType="Self.Bill" />
-          <EntitySet Name="BillInfo" EntityType="Self.BillInfo" />
-          <EntitySet Name="Food" EntityType="Self.Food" />
-          <EntitySet Name="FoodCategory" EntityType="Self.FoodCategory" />
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
-          <EntitySet Name="TableFood" EntityType="Self.TableFood" />
-          <AssociationSet Name="FK__Bill__idTable__49C3F6B7" Association="Self.FK__Bill__idTable__49C3F6B7">
-            <End Role="TableFood" EntitySet="TableFood" />
-            <End Role="Bill" EntitySet="Bill" />
+          <EntitySet Name="Accounts" EntityType="Self.Account" />
+          <EntitySet Name="Bills" EntityType="Self.Bill" />
+          <EntitySet Name="BillInfoes" EntityType="Self.BillInfo" />
+          <EntitySet Name="Foods" EntityType="Self.Food" />
+          <EntitySet Name="FoodCategories" EntityType="Self.FoodCategory" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+          <EntitySet Name="TableFoods" EntityType="Self.TableFood" />
+          <AssociationSet Name="FK__Bill__TableID__17F790F9" Association="Self.FK__Bill__TableID__17F790F9">
+            <End Role="TableFood" EntitySet="TableFoods" />
+            <End Role="Bill" EntitySet="Bills" />
           </AssociationSet>
-          <AssociationSet Name="FK__BillInfo__idBill__4D94879B" Association="Self.FK__BillInfo__idBill__4D94879B">
-            <End Role="Bill" EntitySet="Bill" />
-            <End Role="BillInfo" EntitySet="BillInfo" />
+          <AssociationSet Name="FK__BillInfo__BillID__1BC821DD" Association="Self.FK__BillInfo__BillID__1BC821DD">
+            <End Role="Bill" EntitySet="Bills" />
+            <End Role="BillInfo" EntitySet="BillInfoes" />
           </AssociationSet>
-          <AssociationSet Name="FK__BillInfo__idFood__4E88ABD4" Association="Self.FK__BillInfo__idFood__4E88ABD4">
-            <End Role="Food" EntitySet="Food" />
-            <End Role="BillInfo" EntitySet="BillInfo" />
+          <AssociationSet Name="FK__BillInfo__FoodID__1CBC4616" Association="Self.FK__BillInfo__FoodID__1CBC4616">
+            <End Role="Food" EntitySet="Foods" />
+            <End Role="BillInfo" EntitySet="BillInfoes" />
           </AssociationSet>
-          <AssociationSet Name="FK__Food__idCategory__44FF419A" Association="Self.FK__Food__idCategory__44FF419A">
-            <End Role="FoodCategory" EntitySet="FoodCategory" />
-            <End Role="Food" EntitySet="Food" />
+          <AssociationSet Name="FK__Food__FoodCaID__04E4BC85" Association="Self.FK__Food__FoodCaID__04E4BC85">
+            <End Role="FoodCategory" EntitySet="FoodCategories" />
+            <End Role="Food" EntitySet="Foods" />
           </AssociationSet>
         </EntityContainer>
       </Schema>
@@ -294,7 +294,7 @@
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="QLQCafeModelStoreContainer" CdmEntityContainer="QLQCafeEntities">
-          <EntitySetMapping Name="Account">
+          <EntitySetMapping Name="Accounts">
             <EntityTypeMapping TypeName="QLQCafeModel.Account">
               <MappingFragment StoreEntitySet="Account">
                 <ScalarProperty Name="UserName" ColumnName="UserName" />
@@ -304,38 +304,38 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Bill">
+          <EntitySetMapping Name="Bills">
             <EntityTypeMapping TypeName="QLQCafeModel.Bill">
               <MappingFragment StoreEntitySet="Bill">
                 <ScalarProperty Name="BillID" ColumnName="BillID" />
                 <ScalarProperty Name="DateCheckIn" ColumnName="DateCheckIn" />
                 <ScalarProperty Name="DateCheckOut" ColumnName="DateCheckOut" />
-                <ScalarProperty Name="idTable" ColumnName="idTable" />
+                <ScalarProperty Name="TableID" ColumnName="TableID" />
                 <ScalarProperty Name="status" ColumnName="status" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="BillInfo">
+          <EntitySetMapping Name="BillInfoes">
             <EntityTypeMapping TypeName="QLQCafeModel.BillInfo">
               <MappingFragment StoreEntitySet="BillInfo">
                 <ScalarProperty Name="BillInfoID" ColumnName="BillInfoID" />
-                <ScalarProperty Name="idBill" ColumnName="idBill" />
-                <ScalarProperty Name="idFood" ColumnName="idFood" />
+                <ScalarProperty Name="BillID" ColumnName="BillID" />
+                <ScalarProperty Name="FoodID" ColumnName="FoodID" />
                 <ScalarProperty Name="count" ColumnName="count" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Food">
+          <EntitySetMapping Name="Foods">
             <EntityTypeMapping TypeName="QLQCafeModel.Food">
               <MappingFragment StoreEntitySet="Food">
-                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="FoodID" ColumnName="FoodID" />
                 <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="idCategory" ColumnName="idCategory" />
+                <ScalarProperty Name="FoodCaID" ColumnName="FoodCaID" />
                 <ScalarProperty Name="price" ColumnName="price" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="FoodCategory">
+          <EntitySetMapping Name="FoodCategories">
             <EntityTypeMapping TypeName="QLQCafeModel.FoodCategory">
               <MappingFragment StoreEntitySet="FoodCategory">
                 <ScalarProperty Name="FoodCaID" ColumnName="FoodCaID" />
@@ -344,7 +344,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="sysdiagrams">
-            <EntityTypeMapping TypeName="QLQCafeModel.sysdiagrams">
+            <EntityTypeMapping TypeName="QLQCafeModel.sysdiagram">
               <MappingFragment StoreEntitySet="sysdiagrams">
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="principal_id" ColumnName="principal_id" />
@@ -354,7 +354,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="TableFood">
+          <EntitySetMapping Name="TableFoods">
             <EntityTypeMapping TypeName="QLQCafeModel.TableFood">
               <MappingFragment StoreEntitySet="TableFood">
                 <ScalarProperty Name="TableID" ColumnName="TableID" />
@@ -377,7 +377,7 @@
     <Options>
       <DesignerInfoPropertySet>
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
-        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
         <DesignerProperty Name="UseLegacyProvider" Value="false" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />

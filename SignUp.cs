@@ -62,7 +62,7 @@ namespace QuanLyQuanCafe
                 using (QLQCafeEntities db = new QLQCafeEntities())
                 {
                     // LƯU Ý: Kiểm tra tên bảng (db.Account hay db.Accounts?)
-                    var checkExist = db.Account.Any(x => x.UserName == user);
+                    var checkExist = db.Accounts.Any(x => x.UserName == user);
 
                     if (checkExist)
                     {
@@ -82,7 +82,7 @@ namespace QuanLyQuanCafe
                     newAcc.Type = 0; // 0: Staff
 
                     // Lưu vào Database
-                    db.Account.Add(newAcc);
+                    db.Accounts.Add(newAcc);
                     db.SaveChanges();
 
                     return true;

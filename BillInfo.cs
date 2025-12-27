@@ -15,8 +15,8 @@ namespace QuanLyQuanCafe
     public partial class BillInfo
     {
         public int BillInfoID { get; set; }
-        public int idBill { get; set; }
-        public int idFood { get; set; }
+        public int BillID { get; set; }
+        public int FoodID { get; set; }
         public int count { get; set; }
     
         public virtual Bill Bill { get; set; }

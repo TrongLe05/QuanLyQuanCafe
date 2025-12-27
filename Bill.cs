@@ -17,17 +17,17 @@ namespace QuanLyQuanCafe
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Bill()
         {
-            this.BillInfo = new HashSet<BillInfo>();
+            this.BillInfoes = new HashSet<BillInfo>();
         }
     
         public int BillID { get; set; }
         public System.DateTime DateCheckIn { get; set; }
         public Nullable<System.DateTime> DateCheckOut { get; set; }
-        public int idTable { get; set; }
+        public int TableID { get; set; }
         public int status { get; set; }
     
         public virtual TableFood TableFood { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<BillInfo> BillInfo { get; set; }
+        public virtual ICollection<BillInfo> BillInfoes { get; set; }
     }
 }

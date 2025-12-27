@@ -42,7 +42,7 @@ namespace QuanLyQuanCafe
 
             using (QLQCafeEntities db = new QLQCafeEntities())
             {
-                List<TableFood> tableList = db.TableFood.ToList();
+                List<TableFood> tableList = db.TableFoods.ToList();
 
                 foreach (TableFood item in tableList)
                 {
@@ -96,16 +96,16 @@ namespace QuanLyQuanCafe
             using (QLQCafeEntities db = new QLQCafeEntities())
             {
                 // 1. Lấy Bill chưa thanh toán của bàn này
-                Bill bill = db.Bill.FirstOrDefault(b => b.idTable == idTable && b.status == 0);
+                Bill bill = db.Bills.FirstOrDefault(b => b.TableID == idTable && b.status == 0);
 
                 if (bill != null)
                 {
                     // 2. Lấy danh sách món ăn
-                    List<BillInfo> listBillInfo = bill.BillInfo.ToList();
+                    List<BillInfo> listBillInfo = bill.BillInfoes.ToList();
 
                     foreach (BillInfo info in listBillInfo)
                     {
-                        Food food = db.Food.FirstOrDefault(f => f.id == info.idFood);
+                        Food food = db.Foods.FirstOrDefault(f => f.FoodID == info.FoodID);
                         if (food == null) continue;
 
                         // Hiển thị lên ListView
@@ -155,7 +155,7 @@ namespace QuanLyQuanCafe
         {
             using (QLQCafeEntities db = new QLQCafeEntities())
             {
-                List<FoodCategory> listCategory = db.FoodCategory.ToList();
+                List<FoodCategory> listCategory = db.FoodCategories.ToList();
                 cbx_FoodCa.DataSource = listCategory;
                 cbx_FoodCa.DisplayMember = "name"; // Hiển thị tên
 
@@ -177,7 +177,7 @@ namespace QuanLyQuanCafe
         {
             using (QLQCafeEntities db = new QLQCafeEntities())
             {
-                List<Food> listFood = db.Food.Where(p => p.idCategory == id).ToList();
+                List<Food> listFood = db.Foods.Where(p => p.FoodCaID == id).ToList();
                 cbx_Food.DataSource = listFood;
                 cbx_Food.DisplayMember = "name";
             }
@@ -199,9 +199,9 @@ namespace QuanLyQuanCafe
                 int idBill = 0;
 
                 // Kiểm tra bàn này đã có Bill chưa
-                Bill bill = db.Bill.FirstOrDefault(b => b.idTable == currentTable.TableID && b.status == 0);
+                Bill bill = db.Bills.FirstOrDefault(b => b.TableID == currentTable.TableID && b.status == 0);
 
-                int foodID = (cbx_Food.SelectedItem as Food).id;
+                int foodID = (cbx_Food.SelectedItem as Food).FoodID;
                 int count = (int)nud_FoodCount.Value;
 
                 if (bill == null)
@@ -210,25 +210,25 @@ namespace QuanLyQuanCafe
                     Bill newBill = new Bill();
                     newBill.DateCheckIn = DateTime.Now;
                     newBill.DateCheckOut = null;
-                    newBill.idTable = currentTable.TableID;
+                    newBill.TableID = currentTable.TableID;
                     newBill.status = 0; // Chưa thanh toán
 
-                    db.Bill.Add(newBill);
+                    db.Bills.Add(newBill);
                     db.SaveChanges(); // Lưu để sinh ra ID Bill
 
                     idBill = newBill.BillID; // Lấy ID vừa sinh ra
 
                     // Tạo chi tiết hóa đơn
                     BillInfo newInfo = new BillInfo();
-                    newInfo.idBill = idBill;
-                    newInfo.idFood = foodID;
+                    newInfo.BillID = idBill;
+                    newInfo.FoodID = foodID;
                     newInfo.count = count;
 
-                    db.BillInfo.Add(newInfo);
+                    db.BillInfoes.Add(newInfo);
                     db.SaveChanges();
 
                     // Cập nhật trạng thái bàn thành "Có người"
-                    TableFood table = db.TableFood.Find(currentTable.TableID);
+                    TableFood table = db.TableFoods.Find(currentTable.TableID);
                     table.status = "Có người";
                     db.SaveChanges();
                 }
@@ -236,7 +236,7 @@ namespace QuanLyQuanCafe
                 {
                     // TRƯỜNG HỢP 2: Bàn đã có Bill -> Kiểm tra món đã tồn tại chưa
                     idBill = bill.BillID;
-                    BillInfo billInfo = db.BillInfo.FirstOrDefault(bi => bi.idBill == idBill && bi.idFood == foodID);
+                    BillInfo billInfo = db.BillInfoes.FirstOrDefault(bi => bi.BillID == idBill && bi.FoodID == foodID);
 
                     if (billInfo != null)
                     {
@@ -245,7 +245,7 @@ namespace QuanLyQuanCafe
                         if (billInfo.count <= 0)
                         {
                             // Nếu số lượng <= 0 thì xóa luôn món đó (Entity Framework Remove)
-                            db.BillInfo.Remove(billInfo);
+                            db.BillInfoes.Remove(billInfo);
                         }
                     }
                     else
@@ -254,10 +254,10 @@ namespace QuanLyQuanCafe
                         if (count > 0) // Chỉ thêm nếu số lượng > 0
                         {
                             BillInfo newInfo = new BillInfo();
-                            newInfo.idBill = idBill;
-                            newInfo.idFood = foodID;
+                            newInfo.BillID = idBill;
+                            newInfo.FoodID = foodID;
                             newInfo.count = count;
-                            db.BillInfo.Add(newInfo);
+                            db.BillInfoes.Add(newInfo);
                         }
                     }
                     db.SaveChanges();
@@ -298,13 +298,13 @@ namespace QuanLyQuanCafe
                 using (QLQCafeEntities db = new QLQCafeEntities())
                 {
                     // Tìm món ăn và Bill
-                    Food food = db.Food.FirstOrDefault(f => f.name == foodName);
-                    Bill bill = db.Bill.FirstOrDefault(b => b.idTable == currentTable.TableID && b.status == 0);
+                    Food food = db.Foods.FirstOrDefault(f => f.name == foodName);
+                    Bill bill = db.Bills.FirstOrDefault(b => b.TableID == currentTable.TableID && b.status == 0);
 
                     if (bill != null && food != null)
                     {
                         // Tìm dòng thông tin món ăn trong Bill (BillInfo)
-                        BillInfo info = db.BillInfo.FirstOrDefault(bi => bi.idBill == bill.BillID && bi.idFood == food.id);
+                        BillInfo info = db.BillInfoes.FirstOrDefault(bi => bi.BillID == bill.BillID && bi.FoodID == food.FoodID);
 
                         if (info != null)
                         {
@@ -314,7 +314,7 @@ namespace QuanLyQuanCafe
                             // => Xóa luôn dòng này khỏi database
                             if (countToDelete == 0 || countToDelete >= info.count)
                             {
-                                db.BillInfo.Remove(info);
+                                db.BillInfoes.Remove(info);
                             }
                             else
                             {
@@ -328,18 +328,18 @@ namespace QuanLyQuanCafe
 
                             // --- KIỂM TRA TRẠNG THÁI BÀN ---
                             // Kiểm tra xem Bill này còn món nào không?
-                            bool billConMonAn = db.BillInfo.Any(bi => bi.idBill == bill.BillID);
+                            bool billConMonAn = db.BillInfoes.Any(bi => bi.BillID == bill.BillID);
 
                             if (!billConMonAn)
                             {
                                 // Nếu Bill trống rỗng (không còn món nào)
 
                                 // A. Cập nhật trạng thái bàn về "Trống"
-                                TableFood table = db.TableFood.Find(currentTable.TableID);
+                                TableFood table = db.TableFoods.Find(currentTable.TableID);
                                 table.status = "Trống";
 
                                 // B. Xóa luôn cái Bill rỗng đi cho sạch Data
-                                db.Bill.Remove(bill);
+                                db.Bills.Remove(bill);
 
                                 db.SaveChanges();
                             }
@@ -363,7 +363,7 @@ namespace QuanLyQuanCafe
             using (QLQCafeEntities db = new QLQCafeEntities())
             {
                 // Chỉ lấy những bàn có trạng thái là "Trống"
-                List<TableFood> listTable = db.TableFood.Where(t => t.status == "Trống").ToList();
+                List<TableFood> listTable = db.TableFoods.Where(t => t.status == "Trống").ToList();
 
                 cbx_ChuyenBan.DataSource = listTable;
                 cbx_ChuyenBan.DisplayMember = "name"; // Hiển thị tên bàn
@@ -393,7 +393,7 @@ namespace QuanLyQuanCafe
                 // Kiểm tra xem bàn cũ có Bill nào không (Bàn trống thì không có gì để chuyển)
                 using (QLQCafeEntities db = new QLQCafeEntities())
                 {
-                    Bill bill = db.Bill.FirstOrDefault(b => b.idTable == tableOld.TableID && b.status == 0);
+                    Bill bill = db.Bills.FirstOrDefault(b => b.TableID == tableOld.TableID && b.status == 0);
 
                     if (bill == null)
                     {
@@ -408,15 +408,15 @@ namespace QuanLyQuanCafe
 
                         // A. Cập nhật Bill: Đổi idTable của Bill từ bàn cũ sang bàn mới
                         // Lưu ý: Phải tìm lại Bill trong context hiện tại để update
-                        Bill billToUpdate = db.Bill.Find(bill.BillID);
-                        billToUpdate.idTable = tableNew.TableID;
+                        Bill billToUpdate = db.Bills.Find(bill.BillID);
+                        billToUpdate.TableID = tableNew.TableID;
 
                         // B. Cập nhật trạng thái Bàn Cũ -> "Trống"
-                        TableFood dbTableOld = db.TableFood.Find(tableOld.TableID);
+                        TableFood dbTableOld = db.TableFoods.Find(tableOld.TableID);
                         dbTableOld.status = "Trống";
 
                         // C. Cập nhật trạng thái Bàn Mới -> "Có người"
-                        TableFood dbTableNew = db.TableFood.Find(tableNew.TableID);
+                        TableFood dbTableNew = db.TableFoods.Find(tableNew.TableID);
                         dbTableNew.status = "Có người";
 
                         // Lưu tất cả thay đổi

@@ -19,18 +19,17 @@ namespace QuanLyQuanCafe
             : base("name=QLQCafeEntities")
         {
         }
-    
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<Account> Account { get; set; }
-        public virtual DbSet<Bill> Bill { get; set; }
-        public virtual DbSet<BillInfo> BillInfo { get; set; }
-        public virtual DbSet<Food> Food { get; set; }
-        public virtual DbSet<FoodCategory> FoodCategory { get; set; }
-        public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
-        public virtual DbSet<TableFood> TableFood { get; set; }
+        public virtual DbSet<Account> Accounts { get; set; }
+        public virtual DbSet<Bill> Bills { get; set; }
+        public virtual DbSet<BillInfo> BillInfoes { get; set; }
+        public virtual DbSet<Food> Foods { get; set; }
+        public virtual DbSet<FoodCategory> FoodCategories { get; set; }
+        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
+        public virtual DbSet<TableFood> TableFoods { get; set; }
     }
 }
