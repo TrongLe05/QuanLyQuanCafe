@@ -22,23 +22,6 @@ namespace QuanLyQuanCafe
         {
             string userName = txt_Username.Text;
             string passWord = txt_Password.Text;
-
-            if (Login_check(userName, passWord))
-            {
-                // Đăng nhập thành công
-                Home f = new Home(); // Form1 là cái form quản lý bàn cafe chính
-                this.Hide();
-                f.ShowDialog();
-                this.Show();
-            }
-            else
-            {
-                MessageBox.Show("Sai tên tài khoản hoặc mật khẩu!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-        }
-
-        private bool Login_check(string userName, string passWord)
-        {
             // 1. Mã hóa mật khẩu người dùng vừa nhập thành MD5
             string hashPass = GetMD5(passWord);
 
@@ -50,7 +33,32 @@ namespace QuanLyQuanCafe
                                .Where(p => p.UserName == userName && p.Password == hashPass)
                                .FirstOrDefault();
 
-                return result != null;
+                if (result == null)
+                {
+                    MessageBox.Show("Sai tên tài khoản hoặc mật khẩu!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                if (result.Type == 0)
+                {
+                    // Đăng nhập thành công
+                    StaffForm sh = new StaffForm(); // Form1 là cái form quản lý bàn cafe chính
+                    this.Hide();
+                    this.txt_Password.Clear();
+                    this.txt_Username.Clear();
+                    sh.ShowDialog();
+                    this.Show();
+                }
+                else
+                {
+                    AdminForm ad = new AdminForm();
+                    this.Hide();
+                    this.txt_Password.Clear();
+                    this.txt_Username.Clear();
+                    ad.ShowDialog();
+                    this.Show();
+
+                }
             }
         }
 

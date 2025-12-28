@@ -18,6 +18,11 @@ namespace QuanLyQuanCafe
         public QLQCafeEntities()
             : base("name=QLQCafeEntities")
         {
+            if (System.ComponentModel.LicenseManager.UsageMode ==
+            System.ComponentModel.LicenseUsageMode.Designtime)
+            {
+                return;
+            }
         }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

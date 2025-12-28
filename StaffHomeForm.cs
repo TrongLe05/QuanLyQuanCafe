@@ -1,39 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Windows.Forms;
 using System.Globalization;
-using System.Diagnostics; // Để format tiền tệ (VND)
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace QuanLyQuanCafe
 {
     [DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(),nq}")]
-    public partial class Home : Form
+    public partial class StaffHomeForm : UserControl
     {
         // Biến lưu ID bàn đang được chọn
         private TableFood currentTable = null;
 
-        public Home()
+        public StaffHomeForm()
         {
             InitializeComponent();
-        }
-        private void Home_Load_1(object sender, EventArgs e)
-        {
-            {
-                LoadTable();
-                LoadCategory();
-                LoadComboBoxSwitchTable();
 
-                // Cấu hình ListView (nếu chưa chỉnh trong Design)
-                lsv_Bill.View = View.Details;
-                lsv_Bill.GridLines = true;
-                lsv_Bill.FullRowSelect = true;
-                lsv_Bill.Columns.Add("Tên món", 150);
-                lsv_Bill.Columns.Add("Số lượng", 70);
-                lsv_Bill.Columns.Add("Đơn giá", 100);
-                lsv_Bill.Columns.Add("Thành tiền", 100);
-            }
+            if (this.DesignMode)
+                return;
+        }
+
+        private void StaffHomeForm_Load(object sender, EventArgs e)
+        {
+            LoadTable();
+            LoadCategory();
+            LoadComboBoxSwitchTable();
+
+            // Cấu hình ListView (nếu chưa chỉnh trong Design)
+            lsv_Bill.View = View.Details;
+            lsv_Bill.GridLines = true;
+            lsv_Bill.FullRowSelect = true;
+            lsv_Bill.Columns.Add("Tên món", 150);
+            lsv_Bill.Columns.Add("Số lượng", 70);
+            lsv_Bill.Columns.Add("Đơn giá", 100);
+            lsv_Bill.Columns.Add("Thành tiền", 100);
         }
 
         #region 1. Hiển thị danh sách Bàn (FlowLayoutPanel)
@@ -575,25 +581,6 @@ namespace QuanLyQuanCafe
             }
         }
 
-
-
-
-
-
-
-
-
-
         #endregion
-
-        private void nud_FoodCount_ValueChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void nud_FoodDel_ValueChanged(object sender, EventArgs e)
-        {
-
-        }
     }
 }

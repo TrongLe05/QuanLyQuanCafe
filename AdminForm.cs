@@ -15,6 +15,7 @@ namespace QuanLyQuanCafe
         public AdminForm()
         {
             InitializeComponent();
+            dashboardForm1.BringToFront();
         }
 
         private void btnTrangChu_Click(object sender, EventArgs e)
@@ -25,6 +26,21 @@ namespace QuanLyQuanCafe
         private void btnQuanLyMonAn_Click(object sender, EventArgs e)
         {
             foodManagermentForm1.BringToFront();
+        }
+
+        private void btnDangXuat_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+        }
+
+        private void btnHoaDon_Click(object sender, EventArgs e)
+        {
+            invoiceForm1.BringToFront();
+        }
+
+        private void btnTaiKhoan_Click(object sender, EventArgs e)
+        {
+            accountManagermentForm1.BringToFront();
         }
     }
 }
